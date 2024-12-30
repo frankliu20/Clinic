@@ -4,7 +4,7 @@ import by.gp.clinic.AbstractSpringMvcTest;
 import by.gp.clinic.dbo.DoctorDbo;
 import by.gp.clinic.dto.DoctorDto;
 import by.gp.clinic.mock.DoctorMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DoctorDboDtoConverterTest extends AbstractSpringMvcTest {
 

@@ -19,6 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.sql.DataSource;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -29,23 +31,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeRequests()
-            .antMatchers(HttpMethod.POST, "/login").permitAll()
-            .antMatchers("/development/**").permitAll()
-            .antMatchers("/public/**").permitAll()
-            .antMatchers("/actuator/**").permitAll()
-            .antMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
-            .antMatchers(HttpMethod.GET, "/v2/api-docs").permitAll()
-            .antMatchers(HttpMethod.GET, "/webjars/springfox-swagger-ui/**").permitAll()
-            .antMatchers(HttpMethod.GET, "/swagger-resources/**").permitAll()
-            .antMatchers("/admin/**").hasAuthority(UserRole.ADMIN.name())
-            .antMatchers("/**").hasAnyAuthority(UserRole.USER.name(), UserRole.DOCTOR.name(), UserRole.ADMIN.name())
-            .anyRequest().authenticated()
-            .and()
+        http.cors(withDefaults()).csrf(csrf -> csrf.disable()).authorizeRequests(requests -> requests
+            .requestMatchers(HttpMethod.POST, "/login").permitAll()
+            .requestMatchers("/development/**").permitAll()
+            .requestMatchers("/public/**").permitAll()
+            .requestMatchers("/actuator/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
+            .requestMatchers(HttpMethod.GET, "/v2/api-docs").permitAll()
+            .requestMatchers(HttpMethod.GET, "/webjars/springfox-swagger-ui/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/swagger-resources/**").permitAll()
+            .requestMatchers("/admin/**").hasAuthority(UserRole.ADMIN.name())
+            .requestMatchers("/**").hasAnyAuthority(UserRole.USER.name(), UserRole.DOCTOR.name(), UserRole.ADMIN.name())
+            .anyRequest().authenticated())
             .addFilterBefore(new LoginFilter(tokenAuthenticationService, authenticationManager(), objectMapperBuilder),
-                             UsernamePasswordAuthenticationFilter.class)
+                UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(new AuthenticationFilter(tokenAuthenticationService),
-                             UsernamePasswordAuthenticationFilter.class);
+                UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
@@ -53,13 +54,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
+    /*~~(Migrate manually based on https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)~~>*/@Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
-    @Override
+    /*~~(Migrate manually based on https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)~~>*/@Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
             .usersByUsernameQuery("select alias, password, enabled from user where alias=?")

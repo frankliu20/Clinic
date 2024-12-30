@@ -1,8 +1,8 @@
 package selenium;
 
 import lombok.Data;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -47,7 +47,7 @@ public abstract class AbstractUITest {
         System.setProperty("webdriver.chrome.driver", "C:\\chromedriver.exe");
     }
 
-    @Before
+    @BeforeEach
     public void initDriver() {
         final ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito", "--start-maximized");
@@ -58,7 +58,7 @@ public abstract class AbstractUITest {
         getDriver().get(BASE_URL);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         driver.quit();
     }
@@ -80,7 +80,7 @@ public abstract class AbstractUITest {
     }
 
     private WebElement getWebElementByXPath(final String xPath, final String placeholder) {
-        return getWebElements(xPath, placeholder).get(0);
+        return getWebElements(xPath, placeholder).getFirst();
     }
 
     private List<WebElement> getWebElements(final String xPath) {

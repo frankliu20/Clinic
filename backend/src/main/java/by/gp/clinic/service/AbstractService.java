@@ -28,12 +28,12 @@ public class AbstractService<Dbo extends AbstractDbo, Dto extends AbstractDto> {
 
     @Transactional
     public Dto get(final Long id) {
-        return converter.convertToDto(repository.getOne(id));
+        return converter.convertToDto(repository.getReferenceById(id));
     }
 
     @Transactional
     public Dbo getDbo(final Long id) {
-        return repository.getOne(id);
+        return repository.getReferenceById(id);
     }
 
     public Dbo convertToDbo(final Dto dto) {

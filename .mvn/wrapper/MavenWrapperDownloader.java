@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -102,7 +103,7 @@ public class MavenWrapperDownloader {
     }
 
     private static void downloadFileFromURL(String urlString, File destination) throws Exception {
-        URL website = new URL(urlString);
+        URL website = URI.create(urlString).toURL();
         ReadableByteChannel rbc;
         rbc = Channels.newChannel(website.openStream());
         FileOutputStream fos = new FileOutputStream(destination);

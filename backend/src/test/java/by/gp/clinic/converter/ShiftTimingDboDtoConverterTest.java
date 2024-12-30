@@ -4,10 +4,10 @@ import by.gp.clinic.AbstractSpringMvcTest;
 import by.gp.clinic.dbo.ShiftTimingDbo;
 import by.gp.clinic.dto.ShiftTimingDto;
 import by.gp.clinic.mock.ShiftTimingMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ShiftTimingDboDtoConverterTest extends AbstractSpringMvcTest {
 

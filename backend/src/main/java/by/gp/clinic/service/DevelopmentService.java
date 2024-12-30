@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static by.gp.clinic.enumerated.Gender.MALE;
 import static java.time.LocalDateTime.now;
@@ -87,9 +88,9 @@ public class DevelopmentService {
         patients.forEach(p -> {
             for (int i = 0; i < 50; i++) {
                 final TicketDto ticketDto = new TicketDto();
-                ticketDto.setDoctorId(doctors.get((int) (doctors.size() * Math.random())).getId());
+                ticketDto.setDoctorId(doctors.get((int) (doctors.size() * ThreadLocalRandom.current().nextDouble())).getId());
                 ticketDto.setPatientId(p.getId());
-                ticketDto.setDateTime(now().plusHours((long) (Math.random() * 200) + 2).withMinute(15).withSecond(0));
+                ticketDto.setDateTime(now().plusHours((long) (ThreadLocalRandom.current().nextDouble() * 200) + 2).withMinute(15).withSecond(0));
                 try {
                     ticketFacade.addTicket(ticketDto);
                 } catch (Exception ignore) {
@@ -133,11 +134,11 @@ public class DevelopmentService {
     }
 
     private LocalDate getBirthDate() {
-        return LocalDate.now().minusYears((long) (Math.random() * 40) + 20);
+        return LocalDate.now().minusYears((long) (ThreadLocalRandom.current().nextDouble() * 40) + 20);
     }
 
     private String getName(final List<String> names) {
-        return names.get((int) (Math.random() * names.size()));
+        return names.get((int) (ThreadLocalRandom.current().nextDouble() * names.size()));
     }
 
     private List<String> getManNames() {

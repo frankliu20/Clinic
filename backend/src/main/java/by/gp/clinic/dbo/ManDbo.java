@@ -4,9 +4,9 @@ import by.gp.clinic.enumerated.Gender;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.MappedSuperclass;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDate;
 
 @Data

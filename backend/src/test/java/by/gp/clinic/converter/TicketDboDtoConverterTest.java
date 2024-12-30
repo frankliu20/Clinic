@@ -7,10 +7,10 @@ import by.gp.clinic.dto.DoctorDto;
 import by.gp.clinic.dto.TicketDto;
 import by.gp.clinic.mock.DoctorMock;
 import by.gp.clinic.mock.TicketMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TicketDboDtoConverterTest extends AbstractSpringMvcTest {
 

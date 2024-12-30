@@ -4,10 +4,10 @@ import by.gp.clinic.AbstractSpringMvcTest;
 import by.gp.clinic.dbo.DoctorShiftDbo;
 import by.gp.clinic.dto.DoctorShiftDto;
 import by.gp.clinic.mock.DoctorShiftMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DoctorShiftDboDtoConverterTest extends AbstractSpringMvcTest {
 

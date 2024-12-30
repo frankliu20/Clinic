@@ -11,11 +11,11 @@ import by.gp.clinic.repository.CustomRepository;
 import by.gp.clinic.repository.UserRepository;
 import by.gp.clinic.search.UserSearchRequest;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserControllerTest extends AbstractControllerTest {
 

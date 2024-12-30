@@ -9,7 +9,7 @@ import by.gp.clinic.repository.CustomRepository;
 import by.gp.clinic.repository.DoctorShiftRepository;
 import by.gp.clinic.search.DoctorShiftSearchRequest;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static by.gp.clinic.mock.SpecialDoctorShiftMock.getSpecialDoctorShiftSpecialityDtoMock;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DoctorShiftControllerTest extends AbstractControllerTest {
 

@@ -9,17 +9,18 @@ import by.gp.clinic.repository.PatientRepository;
 import by.gp.clinic.repository.TicketRepository;
 import by.gp.clinic.search.TicketSearchRequest;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static by.gp.clinic.mock.TicketMock.getTicketDtoMock;
 import static by.gp.clinic.serializer.ClinicDateTimeSerializer.DATE_TIME_PATTERN;
 import static java.time.LocalDateTime.now;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TicketControllerTest extends AbstractControllerTest {
 
@@ -79,9 +80,9 @@ public class TicketControllerTest extends AbstractControllerTest {
         patients.forEach(p -> {
             for (int i = 0; i < 10; i++) {
                 final TicketDto ticketDto = new TicketDto();
-                ticketDto.setDoctorId(doctors.get((int) (doctors.size() * Math.random())).getId());
+                ticketDto.setDoctorId(doctors.get((int) (doctors.size() * ThreadLocalRandom.current().nextDouble())).getId());
                 ticketDto.setPatientId(p.getId());
-                ticketDto.setDateTime(now().plusHours((long) (Math.random() * 200) + 2).withMinute(15).withSecond(0));
+                ticketDto.setDateTime(now().plusHours((long) (ThreadLocalRandom.current().nextDouble() * 200) + 2).withMinute(15).withSecond(0));
                 postQuery(getUrl(), ticketDto);
             }
         });
