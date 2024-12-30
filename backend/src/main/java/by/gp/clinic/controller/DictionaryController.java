@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/dictionary")
-@Tag(tags = "Dictionary",
-    name = "Dictionary for frontend")
+@Tag(name = "Dictionary",
+    description = "Dictionary for frontend")
 @RequiredArgsConstructor
 public class DictionaryController {
 

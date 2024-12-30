@@ -5,26 +5,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.SecurityReference;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.contexts.SecurityContext;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.security.SecurityScheme.In;
+import io.swagger.v3.oas.models.security.SecurityScheme.Type;
+import org.springdoc.core.GroupedOpenApi;
 
 import javax.sql.DataSource;
-import java.util.List;
-
-import static by.gp.clinic.service.TokenAuthenticationService.HEADER_STRING;
-import static com.google.common.collect.Lists.newArrayList;
 
 @Configuration
-@EnableSwagger2
 @RequiredArgsConstructor
 public class SwaggerConfig {
 
@@ -33,38 +24,24 @@ public class SwaggerConfig {
     private final DataSource dataSource;
 
     @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-            .securitySchemes(newArrayList(apiKey()))
-            .securityContexts(newArrayList(securityContext()))
-            .enableUrlTemplating(true)
-            .select()
-            .apis(RequestHandlerSelectors.any())
-            .paths(PathSelectors.any())
-            .build()
-            .apiInfo(apiInfo());
-    }
-
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-            .title("Clinic APIs")
-            .description("APIs for work with clinic server")
+    public GroupedOpenApi api() {
+        return GroupedOpenApi.builder()
+            .group("clinic")
+            .pathsToMatch("/**")
+            .addOpenApiCustomiser(openApi -> openApi
+                .info(new Info().title("Clinic APIs").description("APIs for work with clinic server"))
+                .addSecurityItem(new SecurityRequirement().addList("token")))
             .build();
     }
 
-    private SecurityContext securityContext() {
-        return SecurityContext.builder()
-            .securityReferences(defaultAuth())
-            .forPaths(PathSelectors.ant("/**"))
-            .build();
-    }
-
-    private List<SecurityReference> defaultAuth() {
-        final AuthorizationScope[] authorizationScopes = {new AuthorizationScope("global", "accessEverything")};
-        return newArrayList(new SecurityReference("token", authorizationScopes));
-    }
-
-    private ApiKey apiKey() {
-        return new ApiKey("token", HEADER_STRING, "header");
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+            .components(new io.swagger.v3.oas.models.Components()
+                .addSecuritySchemes("token", new SecurityScheme()
+                    .type(Type.APIKEY)
+                    .in(In.HEADER)
+                    .name(TokenAuthenticationService.HEADER_STRING)))
+            .info(new Info().title("Clinic APIs").description("APIs for work with clinic server"));
     }
 }

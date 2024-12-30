@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(tags = "Patient Controller",
-    name = "API methods to work with patients")
+@Tag(name = "Patient Controller",
+    description = "API methods to work with patients")
 public class PatientController {
 
     private final PatientFacade patientFacade;

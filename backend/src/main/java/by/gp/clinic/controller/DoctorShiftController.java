@@ -23,8 +23,8 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/shift")
-@Tag(tags = "Doctor shift Controller",
-    name = "API methods for work with doctor shifts")
+@Tag( name= "Doctor shift Controller",
+    description = "API methods for work with doctor shifts")
 public class DoctorShiftController {
 
     private final DoctorShiftFacade facade;

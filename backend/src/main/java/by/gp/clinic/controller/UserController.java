@@ -29,8 +29,8 @@ import static by.gp.clinic.service.TokenAuthenticationService.HEADER_STRING;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(tags = "User Controller",
-    name = "API methods to work with users")
+@Tag(name = "User Controller",
+    description = "API methods to work with users")
 public class UserController {
 
     private final UserFacade userFacade;

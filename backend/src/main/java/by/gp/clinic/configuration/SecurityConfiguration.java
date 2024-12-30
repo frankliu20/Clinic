@@ -12,9 +12,10 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.sql.DataSource;
@@ -22,31 +23,35 @@ import javax.sql.DataSource;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
 
     private final DataSource dataSource;
     private final TokenAuthenticationService tokenAuthenticationService;
     private final Jackson2ObjectMapperBuilder objectMapperBuilder;
 
-    @Override
-    protected void configure(final HttpSecurity http) throws Exception {
-        http.cors(withDefaults()).csrf(csrf -> csrf.disable()).authorizeRequests(requests -> requests
-            .requestMatchers(HttpMethod.POST, "/login").permitAll()
-            .requestMatchers("/development/**").permitAll()
-            .requestMatchers("/public/**").permitAll()
-            .requestMatchers("/actuator/**").permitAll()
-            .requestMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
-            .requestMatchers(HttpMethod.GET, "/v2/api-docs").permitAll()
-            .requestMatchers(HttpMethod.GET, "/webjars/springfox-swagger-ui/**").permitAll()
-            .requestMatchers(HttpMethod.GET, "/swagger-resources/**").permitAll()
-            .requestMatchers("/admin/**").hasAuthority(UserRole.ADMIN.name())
-            .requestMatchers("/**").hasAnyAuthority(UserRole.USER.name(), UserRole.DOCTOR.name(), UserRole.ADMIN.name())
-            .anyRequest().authenticated())
-            .addFilterBefore(new LoginFilter(tokenAuthenticationService, authenticationManager(), objectMapperBuilder),
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors(withDefaults())
+            .csrf(csrf -> csrf.disable())
+            .authorizeRequests(requests -> requests
+                .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                .requestMatchers("/development/**").permitAll()
+                .requestMatchers("/public/**").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v2/api-docs").permitAll()
+                .requestMatchers(HttpMethod.GET, "/webjars/springfox-swagger-ui/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/swagger-resources/**").permitAll()
+                .requestMatchers("/admin/**").hasAuthority(UserRole.ADMIN.name())
+                .requestMatchers("/**").hasAnyAuthority(UserRole.USER.name(), UserRole.DOCTOR.name(), UserRole.ADMIN.name())
+                .anyRequest().authenticated())
+            .addFilterBefore(new LoginFilter(tokenAuthenticationService, authenticationManager(http), objectMapperBuilder),
                 UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(new AuthenticationFilter(tokenAuthenticationService),
                 UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
 
     @Bean
@@ -54,16 +59,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    /*~~(Migrate manually based on https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)~~>*/@Override
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-    /*~~(Migrate manually based on https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)~~>*/@Override
-    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication().dataSource(dataSource)
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder auth = http.getSharedObject(AuthenticationManagerBuilder.class);
+        auth.jdbcAuthentication()
+            .dataSource(dataSource)
             .usersByUsernameQuery("select alias, password, enabled from user where alias=?")
             .authoritiesByUsernameQuery("select alias, role from user where alias=?");
+        return auth.build();
     }
 }
